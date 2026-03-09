@@ -6,7 +6,9 @@
       "Bash(uv run python -c \":*)",
       "Bash(cd:*)",
       "Bash(echo tqdm not installed:*)",
-      "Bash(python:*)"
+      "Bash(python:*)",
+      "Bash(shuf -n 10)",
+      "Bash(python3 -c \":*)"
     ]
   }
 }
