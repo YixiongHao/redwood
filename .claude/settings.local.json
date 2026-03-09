@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(uv init --no-readme)",
+      "Bash(uv add aiohttp)",
+      "Bash(uv run python -c \":*)"
+    ]
+  }
+}
