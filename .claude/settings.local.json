@@ -3,7 +3,10 @@
     "allow": [
       "Bash(uv init --no-readme)",
       "Bash(uv add aiohttp)",
-      "Bash(uv run python -c \":*)"
+      "Bash(uv run python -c \":*)",
+      "Bash(cd:*)",
+      "Bash(echo tqdm not installed:*)",
+      "Bash(python:*)"
     ]
   }
 }

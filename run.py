@@ -1,13 +1,29 @@
 import asyncio
 import argparse
 import json
+import os
+import aiohttp
 from scaffold import run_train, run_test
+from api import get_train_set, get_test_set
+
+
+async def fetch_problems(mode: str, path: str):
+    """Download problems from the API and save to a local JSON file."""
+    async with aiohttp.ClientSession() as session:
+        if mode == "train":
+            problems = await get_train_set(session)
+        else:
+            problems = await get_test_set(session)
+    with open(path, "w") as f:
+        json.dump(problems, f, indent=2)
+    print(f"Fetched {len(problems)} {mode} problems → {path}")
+    return problems
 
 
 async def main():
     parser = argparse.ArgumentParser(description="Code Golf Scaffold Runner")
-    parser.add_argument("input", type=str,
-                        help="Path to local JSON file with problems")
+    parser.add_argument("input", type=str, nargs="?", default=None,
+                        help="Path to local JSON file with problems (auto-fetched if missing)")
     parser.add_argument("--mode", choices=["train", "test"], default="train",
                         help="Which phase to run (default: train)")
     parser.add_argument("--problems", type=str, default=None,
@@ -16,9 +32,17 @@ async def main():
                         help="Save results to JSON file")
     args = parser.parse_args()
 
-    # Load problems from local JSON
-    with open(args.input) as f:
-        problems = json.load(f)
+    # Default file path based on mode
+    if args.input is None:
+        args.input = f"{args.mode}_problems.json"
+
+    # Fetch from API if the file doesn't exist
+    if not os.path.exists(args.input):
+        print(f"{args.input} not found, fetching from API...")
+        problems = await fetch_problems(args.mode, args.input)
+    else:
+        with open(args.input) as f:
+            problems = json.load(f)
 
     # Filter to specific problems if requested
     if args.problems:

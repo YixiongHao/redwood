@@ -104,9 +104,32 @@ Core pipeline:
 ### `run.py`
 
 CLI entry point. Args:
+- `input` - path to local JSON file with problems
 - `--mode train|test` - which phase (default: train)
 - `--problems 0,1,2` - specific problem IDs (default: all)
 - `--save results.json` - save results to file
+
+### `analyze.py`
+
+Post-run diagnostics. Reads a rollout folder, finds worst-scoring problems, and diagnoses failure patterns.
+
+```bash
+# Analyze 10 worst problems (default)
+uv run python analyze.py rollouts/20260309_143000
+
+# Analyze 20 worst problems
+uv run python analyze.py rollouts/20260309_143000 -n 20
+
+# Save analysis to JSON
+uv run python analyze.py rollouts/20260309_143000 -o analysis.json
+```
+
+Args:
+- `folder` - path to rollout run folder (contains metrics.json + problem_N.json files)
+- `-n / --top` - number of worst problems to analyze (default: 10)
+- `-o / --output` - save analysis to JSON file
+
+Diagnosed issues include: `NEVER_CORRECT`, `RETRY_SAVED`, `SHORTEN_NO_GAIN`, `EVOLVE_NO_GAIN`, `LOW_DIVERSITY`, `EXTRACT_FAIL`, `ERRORS`, `ALL_WRONG`, `SHORTEN_RATE`.
 
 ## Adding dependencies
 
